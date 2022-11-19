@@ -16,7 +16,7 @@
   - [Requirements](#requirements)
 
 ## Description
-Project for identifying characteristics that are assocatiated with an individual making more or less than $50,000 a year. Constructing a pipeline for modeling of this dataset. 
+This repository's goal is for identifying characteristics that are assocatiated with an individual making more or less than $50,000 a year. This repository contains all code, documentation, data attributed to the project. 
 
 ## Background Information
 The United States Census Bureau leads the country’s Federal Statistical System; its primary
@@ -34,8 +34,15 @@ Sample dataset from US Census archive for ~ 300,000 individuals. The archive con
 3. census_income_metadata.txt (metadata for both datasets).
 4. census_income_additional_info.pdf (supplemental information).
 
-### Features
-
+### Data Information
+-  Number of instances data = 199523
+   -  Duplicate or conflicting instances : 46716
+-  Number of instances in test = 99762
+   -  Duplicate or conflicting instances : 20936
+-  Distribution
+   -  Probability for the label '- 50000' : 93.80%
+   -  Probability for the label '50000+' : 6.20%
+- Number of features = 40 (continuous : 7 nominal : 33)
 ## Methodology
 1. Exploratory Data Analysis
     - Numerical and/or graphical representation of the data
@@ -49,6 +56,7 @@ Sample dataset from US Census archive for ~ 300,000 individuals. The archive con
     - Key findings and recommendations
 
 ### EDA
+- After initial research into the data background, the distribution of > 50,000 : < 50,000 is favored towards one class heavily (93% is > 50,000). This could introduce problems in classification methods. There are also several dupicates and conflicting instances, which need to be resolved. The dataset is also unlabeled. 
 
 ### Data Preperation
 

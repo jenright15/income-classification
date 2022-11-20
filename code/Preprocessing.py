@@ -13,9 +13,8 @@ class IncomePreprocess:
     Preprocesses the data for data modeling. 
     Cleans, labels, and encodes features within the dataset.
     '''
-    def __init__(self, train_set, test_set):
-        self.train_set = train_set
-        self.test_set = test_set
+    def __init__(self):
+        return None
 
 
     def label_features(self, train_set, test_set):
@@ -221,7 +220,7 @@ class IncomePreprocess:
 
         return df_copy
     
-    def categorize_household(self, df):
+    def categorize_household_summary(self, df):
         '''
         Categorizes person information.
         '''
@@ -305,8 +304,8 @@ class IncomePreprocess:
         '''
         Normalizes all columns in the dataframe.
         '''
-        train_copy = self.train_set.copy()
-        test_copy = self.test_set.copy()
+        train_copy = train.copy()
+        test_copy = test.copy()
 
         train_values= train_copy[column].values.reshape(-1, 1)
         test_values = test_copy[column].values.reshape(-1, 1)
@@ -331,14 +330,13 @@ class IncomePreprocess:
 
         continuous_columns = ['age','wage_per_hour','capital_gains','capital_losses',
                       'dividends_from_stocks','num_persons_worked_for_employer',
-                      'instance_weight','weeks_worked_in_years']
+                      'instance_weight','weeks_worked_in_years',
+                      'education','detailed_household_and_family_stat','class_of_work',
+                      'marital_status','citizenship','detailed_household_summary_in_household']
 
         categorical_columns = list(set(df.columns) - set(continuous_columns))
 
         X_train, X_test = self.categorize_features(categorical_columns, df, df_test)
-        # Drop duplicates
-        X_train = self.drop_duplicates(X_train)
-        X_test = self.drop_duplicates(X_test)
         # Education
         X_train = self.categorize_education(X_train)
         X_test = self.categorize_education(X_test)
@@ -358,16 +356,20 @@ class IncomePreprocess:
         # Financial information
         X_train = self.categorize_financial_info(X_train)
         X_test = self.categorize_financial_info(X_test)
+
+        X_train = self.categorize_household_summary(X_train)
+        X_test  = self.categorize_household_summary(X_test)
         
         # Person
         X_train = self.categorize_person(X_train)
         X_test = self.categorize_person(X_test)
         
-        X_train = self.categorize_household(X_train)
-        X_test  = self.categorize_household(X_test)
-        
+
         X_train, X_test = self.normalize('instance_weight', X_train, X_test)
-        
+        # Drop duplicates
+        X_train = self.drop_duplicates(X_train)
+        X_test = self.drop_duplicates(X_test)
+
         return X_train, X_test
 
 

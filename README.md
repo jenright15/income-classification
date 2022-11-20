@@ -52,7 +52,16 @@ Sample dataset from US Census archive for ~ 300,000 individuals. The archive con
 - The train test split for this dataset is 2/3, 1/2 in a stratified fashion. 
 - The feature ``instance_weight`` is purposefuly ignored, this is the number of people in the population that each record represents. 
 - The ``Not in Universe`` attribute for some of these features indicates that the survee was not in the population for the category of the question.
-- Statistics
+- There is a large number of '?' values in the records of the features
+  - `migration_code_change_in_msa` : 99696
+  - `migration_code_change_in_reg` : 99696
+  - `migration_code_move_within_reg` : 99696
+  - `migration_prev_res_in_sunbelt` : 99696
+  - `country_of_birth_father`: 6713 
+  - `country_of_birth_mother`: 6119
+  - `country_of_birth_self` : 3393
+  
+Statistics
 -  Number of instances training data = 199523
    -  Duplicate or conflicting instances : 46716
 -  Number of instances in test data = 99762
@@ -60,7 +69,7 @@ Sample dataset from US Census archive for ~ 300,000 individuals. The archive con
 -  Distribution
    -  Probability for the label '- 50000' : 93.80%
    -  Probability for the label '50000+' : 6.20%
-- Number of features = 40 (continuous : 7 nominal : 33)
+- Number of features = 40 (continuous : 10 nominal : 33)
 
 ### Data Preperation
 

@@ -18,7 +18,7 @@ class IncomePreprocess:
         self.test_set = test_set
 
 
-    def label_features(self):
+    def label_features(self, train_set, test_set):
         '''
         Label features in the dataset.
         '''
@@ -63,25 +63,26 @@ class IncomePreprocess:
             36: 'own_business_or_self_employed',
             37: 'fill_inc_questionnaire_for_veterans_admin',
             38: 'veteran_benefits',
-            39: 'weeks_worked_in_years',
+            39: 'weeks_worked_in_year',
             40: 'year',
             41: 'y'    
     }
 
-        labeled_train = self.train_set.rename(columns= column_names)
-        labeled_test = self.test_set.rename(columns= column_names)
+        labeled_train = train_set.rename(columns= column_names)
+        labeled_test = test_set.rename(columns= column_names)
 
         return labeled_train, labeled_test
+    
 
     
-    def categorize_features(self, columns):
+    def categorize_features(self, columns, train_set, test_set):
         '''
         Categorizes the features in the dataset using sklearn labelencoder.
         '''
 
         encoder = preprocessing.LabelEncoder()
-        encoded_train = self.train_set.copy()
-        encoded_test = self.test_set.copy()
+        encoded_train = train_set.copy()
+        encoded_test = test_set.copy()
 
         for column in columns:
             encoded_train[column] = encoder.fit_transform(encoded_train[column])
@@ -291,8 +292,16 @@ class IncomePreprocess:
         df_copy['citizenship'] = df_copy['citizenship'].map(mp_cit)
 
         return df_copy
+    
+    def drop_duplicates(self,df):
+        '''
+        Drops duplicates from the dataset.
+        '''
+        df_copy = df.copy()
+        df_copy = df_copy.drop_duplicates(inplace=False)
+        return df_copy
 
-    def normalize(self, column):
+    def normalize(self, column, train, test):
         '''
         Normalizes all columns in the dataframe.
         '''
@@ -322,13 +331,14 @@ class IncomePreprocess:
 
         continuous_columns = ['age','wage_per_hour','capital_gains','capital_losses',
                       'dividends_from_stocks','num_persons_worked_for_employer',
-                      'instance_weight','weeks_worked_in_years',
-                      'education','detailed_household_and_family_stat','class_of_work',
-                      'marital_status','citizenship','detailed_household_summary_in_household']
+                      'instance_weight','weeks_worked_in_years']
 
         categorical_columns = list(set(df.columns) - set(continuous_columns))
 
-        X_train, X_test = self.categorize_features(categorical_columns)
+        X_train, X_test = self.categorize_features(categorical_columns, df, df_test)
+        # Drop duplicates
+        X_train = self.drop_duplicates(X_train)
+        X_test = self.drop_duplicates(X_test)
         # Education
         X_train = self.categorize_education(X_train)
         X_test = self.categorize_education(X_test)
@@ -356,7 +366,7 @@ class IncomePreprocess:
         X_train = self.categorize_household(X_train)
         X_test  = self.categorize_household(X_test)
         
-        X_train, X_test = self.normalize_column('instance_weight',X_train, X_test)
+        X_train, X_test = self.normalize('instance_weight', X_train, X_test)
         
         return X_train, X_test
 

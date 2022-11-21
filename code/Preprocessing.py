@@ -220,6 +220,22 @@ class IncomePreprocess:
 
         return df_copy
     
+    # def categorize_financial_info(self, df):
+    #     '''
+    #     Categorizes financial information.
+    #     '''
+    #     df_copy = df.copy()
+    #     df_copy.loc[df_copy['capital_gains'] >0]= 1
+    #     df_copy.loc[df_copy['capital_gains'] == 0]= 0
+        
+    #     df_copy.loc[df_copy['capital_losses'] >0]= 1
+    #     df_copy.loc[df_copy['capital_losses'] == 0]= 0
+        
+    #     df_copy.loc[df_copy['dividends_from_stocks'] >0]= 1
+    #     df_copy.loc[df_copy['dividends_from_stocks'] == 0]= 0
+
+    #     return df_copy
+    
     def categorize_household_summary(self, df):
         '''
         Categorizes person information.
@@ -304,14 +320,14 @@ class IncomePreprocess:
         '''
         Normalizes all columns in the dataframe.
         '''
+        min_max_scaler = preprocessing.MinMaxScaler()
+
         train_copy = train.copy()
         test_copy = test.copy()
 
         train_values= train_copy[column].values.reshape(-1, 1)
         test_values = test_copy[column].values.reshape(-1, 1)
-        
-        # From sklearn
-        min_max_scaler = preprocessing.MinMaxScaler()
+
         
         train_values_normalized = min_max_scaler.fit_transform(train_values)
         test_values_normalized = min_max_scaler.transform(test_values)
@@ -320,14 +336,18 @@ class IncomePreprocess:
         train_copy[column] = train_values_normalized
         test_copy[column] = test_values_normalized
 
-        return train_copy,test_copy 
-
+        return train_copy, test_copy 
+    
     # Bring it all together in a processing pipeline
     def preprocess(self, df, df_test):
         '''
         Preprocess the dataframe using preprocess methods.
         '''
 
+        # Labeling the columns of the dataframe
+        df, df_test = self.label_features(df, df_test)
+
+        # Features that are either continuous or need further processing to categorize
         continuous_columns = ['age','wage_per_hour','capital_gains','capital_losses',
                       'dividends_from_stocks','num_persons_worked_for_employer',
                       'instance_weight','weeks_worked_in_years',
@@ -365,14 +385,15 @@ class IncomePreprocess:
         X_test = self.categorize_person(X_test)
         
 
-        X_train, X_test = self.normalize('instance_weight', X_train, X_test)
+        X_train, X_test = self.normalize('wage_per_hour', X_train, X_test)
+
         # Drop duplicates
         X_train = self.drop_duplicates(X_train)
         X_test = self.drop_duplicates(X_test)
 
-        # Drop instance weight, not used for classifiying purposes
-        X_train = X_train.drop(['instance_weight'], axis=1)
-        X_test = X_test.drop(['instance_weight'], axis=1)
+        # Drop instance weight, not used for classifiying purposes, other columns have been replaced
+        X_train = X_train.drop(['instance_weight', 'capital_gains', 'capital_losses', 'dividends_from_stocks'], axis=1)
+        X_test = X_test.drop(['instance_weight', 'capital_gains', 'capital_losses', 'dividends_from_stocks'], axis=1)
 
         return X_train, X_test
 

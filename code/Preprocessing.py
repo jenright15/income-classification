@@ -370,8 +370,11 @@ class IncomePreprocess:
         X_train = self.drop_duplicates(X_train)
         X_test = self.drop_duplicates(X_test)
 
-        return X_train, X_test
+        # Drop instance weight, not used for classifiying purposes
+        X_train = X_train.drop(['instance_weight'], axis=1)
+        X_test = X_test.drop(['instance_weight'], axis=1)
 
+        return X_train, X_test
 
 
 

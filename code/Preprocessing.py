@@ -386,7 +386,7 @@ class IncomePreprocess:
         
 
         X_train, X_test = self.normalize('wage_per_hour', X_train, X_test)
-
+        X_train, X_test = self.normalize('age', X_train, X_test)
         # Drop duplicates
         X_train = self.drop_duplicates(X_train)
         X_test = self.drop_duplicates(X_test)

@@ -12,6 +12,7 @@
     - [Model Assessment \& Selection](#model-assessment--selection)
     - [Results \& Conclusions](#results--conclusions)
   - [Usage](#usage)
+  - [Requirements](#requirements)
 
 ## Description
 This repository's goal is for identifying characteristics that are assocatiated with an individual making more or less than $50,000 a year. This repository contains all code, documentation, data attributed to the project. 
@@ -127,7 +128,7 @@ The important features are selected from the fitted model and transformed the tr
 ## Usage
 In the directory `./code/`
 Run the following command
-``
+```
 pip install -r requirements.txt
 ```
 Then run each cell of the jupyter notebook `Data_Modeling.ipynb`

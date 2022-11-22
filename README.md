@@ -1,17 +1,16 @@
 # Income Classification Project
 
 [Income Classification Project](#income-classification-project)
-  - [Table of Contents](#table-of-contents)
+- [Income Classification Project](#income-classification-project)
   - [Description](#description)
   - [Background Information](#background-information)
   - [Data](#data)
-    - [Features](#features)
   - [Methodology](#methodology)
-    - [EDA](#eda)
+    - [Exploratory Data Analysis](#exploratory-data-analysis)
     - [Data Preperation](#data-preperation)
     - [Data Modeling](#data-modeling)
-    - [Model Assessment & Selection](#model-assessment--selection)
-    - [Results & Conclusions](#results--conclusions)
+    - [Model Assessment \& Selection](#model-assessment--selection)
+    - [Results \& Conclusions](#results--conclusions)
   - [Usage](#usage)
   - [Requirements](#requirements)
 
@@ -72,10 +71,57 @@ Statistics
 - Number of features = 40 (continuous : 10 nominal : 33)
 
 ### Data Preperation
+After identifying data types and general statistics, the training and test data is cleaned with  `Preprocessing.py`
+In this module:
+- The columns are labeled
+- Duplicates are dropped
+- Categorical columns are encoded by class/group
+- Continuous columns with high standard deviations are scaled and normalized
+  - `age`
+  - `wage_per_hour`
+- Financial features are transformed into new features based on their value thresholds
+  - `dividends_from_stocks` --> `has_stock`
+  - `capital_losses` --> `has_losses`
+  - `capital_gains` --> `has_gains`
+- `instance_weight` and old financial features are dropped from the dataset as they are redundant or contain irrelavant information
+
+To run this module:
+```
+from Preprocessing import IncomePreprocess
+
+ip  = IncomePreprocess()
+X_train, X_test = ip.preprocess(train_data, test_data)
+```
+
 
 ### Data Modeling
+Two types of classifcation algorithms are fittied to the data:
+- Logisitic Regression
+- Random Forests
+
+There are several other algorithms that could be used, but for the sake of time, only these 2 were implemented.
+
+Each algorithm is fitted to the training data and evaluated on the test set. 
+
 
 ### Model Assessment & Selection
+
+The evaluation metrics used for the classifiers include:
+- accuracy score
+- precision 
+- recall  
+- f1-score
+- roc auc 
+
+Each model generates a classification report representative of each metric. Also, the AUC curve is plotted after training.
+
+Because the classses are imbalanced in the dataset, we must be careful about choosing which metric to use. The benchmark for each model is the roc auc score. This metric represents the likelihood of of the model distinguishing between the two classes.
+
+The values of the fitted models can be found in `../reports`
+
+The logistic regression and random forest model perform similarly. 
+
+The important features are selected from the fitted model and transformed the trainin data. The models are reevaluated on this engineered data. This process reduced only slightly changed the performance metrics from before. This process could be looped with hyperparameter tuning of each model, which in turn should improve the performance.
 
 ### Results & Conclusions
 
